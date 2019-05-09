@@ -1,6 +1,6 @@
 from app.db import DB
 import re
-import hashlib
+import bcrypt
 
 
 class Product:
@@ -29,7 +29,7 @@ class Product:
                 "message": "No old_secret and secret params"
             }
 
-        result = await products.insert_one({"name": name, "password": hashlib.md5(password.encode('utf-8')).hexdigest()})
+        result = await products.insert_one({"name": name, "password": bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')})
         id = result.inserted_id.binary.hex()
 
         return {"result": id}
